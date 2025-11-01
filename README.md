@@ -6,3 +6,5 @@ The projects are, listed in the order they were assigned:
   2. Recursion Exercises
   3. ArrayList, LinkedList (Madlibs)
   4. Command Line Calculator
+  5. Madlibs
+  6. BSTreeMap
