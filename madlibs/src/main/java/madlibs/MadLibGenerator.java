@@ -60,7 +60,7 @@ class ChatGPTInterface
     public static String generateChatGPTResponse(String prompt) throws IOException 
     {
         String urlString = "https://us.api.openai.com/v1/chat/completions",
-        apiKey = "YOUR_API_KEY_HERE",
+        apiKey = "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",
         model = "gpt-4.1";
         try 
         {
