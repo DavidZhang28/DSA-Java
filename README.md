@@ -8,3 +8,4 @@ The projects are, listed in the order they were assigned:
   4. Command Line Calculator
   5. Madlibs
   6. BSTreeMap
+  7. HashMap
