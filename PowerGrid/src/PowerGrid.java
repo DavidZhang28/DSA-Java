@@ -3,6 +3,10 @@ import java.util.*;
 import java.util.stream.*;
 
 
+//Are we required to handle long-size weights?
+//Are we required to handle the case where streets have no names? If so, does it matter how many spaces there are?
+//Can we use trim to trim the names of everything if the answer to the questions above is yes?
+
 public class PowerGrid 
 {
     static List<Edge> PrimsAlgorithm(int nodes, List<List<Edge>> edges)
@@ -110,16 +114,16 @@ public class PowerGrid
             String line = reader.readLine();
             try
             {
-                nodes = Integer.parseInt(line);
+                nodes = Integer.parseInt(line.trim());
                 if (nodes <= 0 || nodes > 1000)
                 {
-                    System.err.println("Error: Invalid number of vertices \'" + nodes + "\' on line 1.");
+                    System.err.println("Error: Invalid number of vertices \'" + line + "\' on line 1.");
                     System.exit(1);
                 }
             }
             catch (NumberFormatException e)
             {
-                System.err.println("Error: First line of \'" + filename + "\' must be an integer.");
+                System.err.println("Error: Invalid number of vertices \'" + line + "\' on line 1.");
                 System.exit(1);
             }
         }
@@ -155,7 +159,7 @@ public class PowerGrid
                 //try catch block for each of the edge parts respectively
                 try
                 {
-                    from = Integer.parseInt(parts[0]);
+                    from = Integer.parseInt(parts[0].trim());
                     if (from <= 0 || from > nodes)
                     {
                         System.err.println("Error: Starting vertex \'" + parts[0] + "\' on line " + lineNumber + " is not among valid values 1-" + nodes + ".");
@@ -170,7 +174,7 @@ public class PowerGrid
 
                 try
                 {
-                    to = Integer.parseInt(parts[1]);
+                    to = Integer.parseInt(parts[1].trim());
                     if (to <= 0 || to > nodes)
                     {
                         System.err.println("Error: Ending vertex \'" + parts[1] + "\' on line " + lineNumber + " is not among valid values 1-" + nodes + ".");
@@ -185,7 +189,7 @@ public class PowerGrid
 
                 try
                 {
-                    weight = Integer.parseInt(parts[2]);
+                    weight = Integer.parseInt(parts[2].trim());
                     if (weight <= 0)
                     {
                         System.err.println("Error: Invalid edge weight \'" + parts[2] + "\' on line " + lineNumber + ".");
@@ -198,7 +202,7 @@ public class PowerGrid
                     System.exit(1);
                 }
 
-                name = parts[3];
+                name = parts[3].trim();
 
                 //checks for duplicate edges
                 if (adjacencyMatrix[from][to] != 0)
@@ -208,9 +212,9 @@ public class PowerGrid
                 }
 
                 //adds edge to the list and updates adjacency matrix
-                Edge edge = new Edge(from, to, weight, name);
-                edges.get(from).add(edge);
-                edges.get(to).add(edge);
+                //Edge edge = new Edge(from, to, weight, name);
+                edges.get(from).add(new Edge(from, to, weight, name));
+                edges.get(to).add(new Edge(to, from, weight, name));
                 adjacencyMatrix[from][to] = 1;
                 adjacencyMatrix[to][from] = 1;
             }
