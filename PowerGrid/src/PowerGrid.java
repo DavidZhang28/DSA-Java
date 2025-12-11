@@ -3,13 +3,12 @@ import java.util.*;
 import java.util.stream.*;
 
 
-//Are we required to handle long-size weights?
 //Are we required to handle the case where streets have no names? If so, does it matter how many spaces there are?
 //Can we use trim to trim the names of everything if the answer to the questions above is yes?
 
 public class PowerGrid 
 {
-    static List<Edge> PrimsAlgorithm(int nodes, List<List<Edge>> edges)
+    static List<Edge> PrimsAlgorithm(int nodes, List<List<Edge>> edges, int numEdges)
     {
         int[] used = new int[nodes + 1];
         Edge[] minDist = new Edge[nodes + 1];
@@ -21,7 +20,7 @@ public class PowerGrid
         //set up minDist with distances from node 1
         for (int i = 1; i < nodes + 1; i++)
         {
-            minDist[i] = new Edge(1, i, Integer.MAX_VALUE, "");
+            minDist[i] = new Edge(1, i, -1, "");
         }
 
         //loop thorugh nodes times:
@@ -34,15 +33,16 @@ public class PowerGrid
                 return null;
         }
 
-        for (int i = 0; i < nodes; i++)
+        PriorityQueue<Edge> p = new PriorityQueue<>();
+        for (int i = 0; i < nodes + 1; i++)
         {
             used[curNode] = 1;
             //NOT USED TO SORT
             //used to find the shortest edge, which is added to our MST
-            PriorityQueue<Edge> p = new PriorityQueue<>();
+            //PriorityQueue<Edge> p = new PriorityQueue<>();
             for (Edge e : edges.get(curNode))
             {
-                if (used[e.to] == 0 && e.weight < minDist[e.to].weight)
+                if (used[e.to] == 0 && (e.weight < minDist[e.to].weight || minDist[e.to].weight == -1))
                 {
                     minDist[e.to].weight = e.weight;
                     minDist[e.to].from = e.from;
@@ -51,10 +51,16 @@ public class PowerGrid
             }
             for (int j = 1; j < nodes + 1; j++)
             {
-                if (used[j] == 0 && minDist[j].weight != Integer.MAX_VALUE)
+                if (used[j] == 0 && minDist[j].weight != -1)
                     p.add(minDist[j]);
             }
             Edge shortestEdge = p.poll();
+            //next while loop is a change, if he doesn't like this comment this out and
+            //replace the old code.
+            while(shortestEdge != null && used[shortestEdge.from] == 1 && used[shortestEdge.to] == 1)
+            {
+                shortestEdge = p.poll();
+            }
             if (shortestEdge != null)
             {
                 ans.add(shortestEdge);
@@ -74,6 +80,8 @@ public class PowerGrid
         }
         if (works)
             return ans;
+        // for (int i = 1; i < nodes + 1; i++)
+        //     System.out.print(used[i] + " ");
         return null;
     }
 
@@ -147,8 +155,10 @@ public class PowerGrid
             String line;
             int from = 0; int to = 0; int weight = 1;
             String name = "";
+            int numEdges = 0;
             while ((line = reader.readLine()) != null)
             {
+                numEdges++;
                 lineNumber++;
                 String[] parts = line.split(",");
                 if (parts.length != 4)
@@ -220,12 +230,14 @@ public class PowerGrid
             }
             reader.close();
             //call Prim's Algorithm
-            List<Edge> mst = PrimsAlgorithm(nodes, edges);
-            if (mst == null)
+            List<Edge> mst = PrimsAlgorithm(nodes, edges, numEdges);
+            if (nodes == 1 && numEdges == 0)
+                System.out.println("Total wire length (meters): 0");
+            else if (mst == null)
                 System.out.println("No solution.");
             else
             {
-                int totalWeight = 0;
+                long totalWeight = 0;
                 //turn all edges in mst into tuples, so the sort will be by street name.
                 List<Tuple> tuples = new ArrayList<>();
                 for (Edge e : mst)

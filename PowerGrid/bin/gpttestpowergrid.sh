@@ -268,7 +268,7 @@ rm -f graph.txt
 1
 EOF
 ) > graph.txt
-run_test_args "graph.txt" "No solution." "0"
+run_test_args "graph.txt" "Total wire length (meters): 0" "0"
 rm -f graph.txt
 
 # Test 22: Another connected graph with MST and street-name sorting
@@ -569,7 +569,7 @@ rm -f graph.txt
 1,2,5,Main St.
 EOF
 ) > graph.txt
-run_test_args "graph.txt" "Error: Starting vertex '' on line 2 is not among valid values 1-3." "1"
+run_test_args "graph.txt" "Error: Invalid edge data ',,,' on line 2." "1"
 rm -f graph.txt
 
 # Test 49: Edge line containing only name
